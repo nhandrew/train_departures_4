@@ -36,15 +36,18 @@ class Departures extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            return ListView.builder(
-                itemCount: snapshot.data.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _buildHeader(context);
-                  } else {
-                    return _buildDeparture(context, snapshot.data[index - 1]);
-                  }
-                });
+            return RefreshIndicator(
+              onRefresh: bloc.refreshDepartures,
+                          child: ListView.builder(
+                  itemCount: snapshot.data.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return _buildHeader(context);
+                    } else {
+                      return _buildDeparture(context, snapshot.data[index - 1]);
+                    }
+                  }),
+            );
           }),
     );
   }

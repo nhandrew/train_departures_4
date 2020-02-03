@@ -21,28 +21,29 @@ class Settings extends StatelessWidget {
               if (!snapshot.hasData) return Container();
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text('Station'),
-                    DropdownButton<String>(
-                      value: snapshot.data,
-                      onChanged: (String value) {
-                        bloc.changeStation(value);
-                      },
-                      items: <String>[
-                        'Media',
-                        'Suburban Station',
-                        'Bala',
-                        '30th Street Station',
-                      ].map<DropdownMenuItem<String>>((String value) {
-                        return DropdownMenuItem<String>(
-                          value: value,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                    ),
-                  ],
+                child: StreamBuilder<List<String>>(
+                  stream: bloc.stations,
+                  builder: (context, snapshotStations) {
+                    if (!snapshotStations.hasData) return Row(children: <Widget>[],);
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('Station'),
+                        DropdownButton<String>(
+                          value: snapshot.data,
+                          onChanged: (String value) {
+                            bloc.changeStation(value);
+                          },
+                          items: snapshotStations.data.map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    );
+                  }
                 ),
               );
             }
